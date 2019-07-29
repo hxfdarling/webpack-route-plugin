@@ -5,10 +5,7 @@ function Home() {
 
 Home.route = [
   {
-    name: '主页',
-    permission: true,
     path: '/',
-    parent: '测试页面',
   },
   {
     path: '/test',
