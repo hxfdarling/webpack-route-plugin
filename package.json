@@ -1,0 +1,20 @@
+{
+  "name": "webpack-route-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@a8k/babel-preset": "^2.0.0-beta.27",
+    "@babel/core": "^7.5.5",
+    "@babel/types": "^7.5.5",
+    "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0"
+  }
+}
