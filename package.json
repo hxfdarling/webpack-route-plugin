@@ -9,13 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@a8k/babel-preset": "^2.0.0-beta.33",
+    "@a8k/babel-preset": "^2.1.2",
     "@babel/core": "^7.5.5",
     "@babel/types": "^7.5.5",
     "chokidar": "^3.0.2",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.1.0"
+    "eslint": "^6.2.1"
   }
 }
