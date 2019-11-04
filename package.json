@@ -10,14 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@a8k/babel-preset": "^2.1.5",
+    "@a8k/babel-preset": "^2.2.0",
     "@babel/core": "^7.5.5",
     "@babel/types": "^7.5.5",
     "chokidar": "^3.0.2",
     "fs-extra": "^8.1.0"
   },
   "devDependencies": {
-    "eslint": "^6.2.1",
+    "eslint": "^6.6.0",
     "standard-version": "^7.0.0"
   }
 }
