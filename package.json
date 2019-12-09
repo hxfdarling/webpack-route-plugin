@@ -10,14 +10,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@a8k/babel-preset": "^2.2.0",
-    "@babel/core": "^7.5.5",
-    "@babel/types": "^7.5.5",
     "chokidar": "^3.0.2",
     "fs-extra": "^8.1.0"
   },
+  "peerDependencies": {
+    "@a8k/babel-preset": "*",
+    "@babel/core": "*",
+    "@babel/types": "*"
+  },
   "devDependencies": {
-    "eslint": "^6.6.0",
-    "standard-version": "^7.0.0"
+    "@a8k/babel-preset": "^2.3.0",
+    "@babel/core": "^7.7.5",
+    "@babel/types": "^7.7.4",
+    "eslint": "^6.7.2",
+    "standard-version": "^7.0.1"
   }
 }
