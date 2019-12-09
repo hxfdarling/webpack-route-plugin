@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.15](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.0.14...v1.0.15) (2019-12-09)
+
+
+### Bug Fixes
+
+* 生成代码时没有配置文件路径造成babel解析异常 ([84a7ef5](https://github.com/hxfdarling/webpack-route-plugin/commit/84a7ef5dc54f516b60d38ab43113da9c6e57513f))
+
 ### [1.0.14](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.0.13...v1.0.14) (2019-12-09)
 
 
