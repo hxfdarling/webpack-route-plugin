@@ -1,13 +1,13 @@
 {
   "name": "webpack-route-plugin",
   "version": "1.2.0",
-  "description": "",
+  "description": "根据目录自动生成页面 route 配置，非常适合 SPA 应用的自动路由生成，去中心化路由配置",
   "main": "lib/index.js",
   "scripts": {
     "release": "standard-version && git push --tags",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "zman",
   "license": "ISC",
   "dependencies": {
     "chokidar": "^3.0.2",
@@ -24,5 +24,24 @@
     "@babel/types": "^7.7.4",
     "eslint": "^6.7.2",
     "standard-version": "^7.0.1"
-  }
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hxfdarling/webpack-route-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hxfdarling/webpack-route-plugin/issues"
+  },
+  "homepage": "https://github.com/hxfdarling/webpack-route-plugin#readme",
+  "keywords": [
+    "webpack",
+    "route",
+    "plugin",
+    "auto-route",
+    "spa"
+  ]
 }
