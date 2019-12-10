@@ -1,4 +1,5 @@
 node_modules
 /test/bootstrap.js
+/test/routes.js
 .DS_Store
 package-lock.json
