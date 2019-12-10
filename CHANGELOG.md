@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.1.0...v1.2.0) (2019-12-10)
+
+
+### Features
+
+* 支持自定义生成routes.js ([c992fa9](https://github.com/hxfdarling/webpack-route-plugin/commit/c992fa91698b8a8fe64434a8834bfcb049287724))
+
 ## [1.1.0](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.0.15...v1.1.0) (2019-12-09)
 
 
