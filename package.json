@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "release": "standard-version && git push --tags",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node lib/test.js"
   },
   "author": "zman",
   "license": "ISC",
