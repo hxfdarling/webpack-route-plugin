@@ -1,56 +1,61 @@
-const { join } = require("path");
-const genBootstrap = require("./genBootstrap");
-const chokidar = require("chokidar");
-const { TYPE_BOOTSTRAP, TYPE_ROUTES } = require("./const");
+import chokidar from 'chokidar';
+import { join } from 'path';
+import genBootstrap from './genCode';
+import { TYPE } from './const';
 
-class RouterPlugin {
+export class RouterPlugin {
+  options: any;
   constructor(options = {}) {
     this.options = Object.assign(
       {
-        baseDir: "./src",
+        baseDir: './src',
         outputFile: null,
-        pagesDir: "./src/pages",
-        type: TYPE_BOOTSTRAP, // route/bootstrap
-        ignoreFiles: []
+        pagesDir: './src/pages',
+        type: TYPE.BOOTSTRAP, // route/bootstrap
+        ignoreFiles: [],
       },
-      options
+      options,
     );
-    if ([TYPE_ROUTES, TYPE_BOOTSTRAP].indexOf(this.options.type) < 0) {
-      throw ("[webpack-route-plugin][error]",
-      'options.type support "bootstrap","route');
+    if ([TYPE.ROUTES, TYPE.BOOTSTRAP].indexOf(this.options.type) < 0) {
+      throw Error(
+        '[webpack-route-plugin][error]' +
+          'options.type support "bootstrap"+"route',
+      );
     }
     if (!this.options.outputFile) {
-      if (this.options.type === TYPE_ROUTES) {
-        this.options.outputFile = "./src/routes.js";
+      if (this.options.type === TYPE.ROUTES) {
+        this.options.outputFile = './src/routes.js';
       } else {
-        this.options.outputFile = "./src/bootstrap.js";
+        this.options.outputFile = './src/bootstrap.js';
       }
     }
   }
+
   apply(compiler) {
-    if (this.options.type === "bootstrap") {
+    if (this.options.type === 'bootstrap') {
       this.genBootstrap(compiler);
     } else {
       this.genRoutes(compiler);
     }
   }
+
   genBootstrap(compiler) {
-    let outputFile = "";
-    let pagesDir = "";
-    let indexFile = "";
-    compiler.hooks.entryOption.tap("RouterPlugin", (context, entry) => {
+    let outputFile = '';
+    let pagesDir = '';
+    let indexFile = '';
+    compiler.hooks.entryOption.tap('RouterPlugin', (context, entry) => {
       if (entry && Object.keys(entry).length > 1) {
         throw new Error(
-          "不支持定义多入口，自动路由应用仅仅支持单一入口，请确保只定义了一个入口"
+          '不支持定义多入口，自动路由应用仅仅支持单一入口，请确保只定义了一个入口',
         );
       }
       if (!entry || Object.keys(entry).length === 0) {
-        entry = join(context, "./src/index");
+        entry = join(context, './src/index');
       }
       const key = Object.keys(entry)[0];
       const tmp = entry[key];
       let readyAddEntry = false;
-      if (typeof tmp === "string") {
+      if (typeof tmp === 'string') {
         indexFile = tmp;
       } else if (tmp instanceof Array) {
         indexFile = tmp[tmp.length - 1];
@@ -59,8 +64,8 @@ class RouterPlugin {
           indexFile = tmp[tmp.length - 2];
         }
       }
-      if (!indexFile || typeof indexFile !== "string") {
-        throw new Error("不支持非string/array的entry配置");
+      if (!indexFile || typeof indexFile !== 'string') {
+        throw new Error('不支持非string/array的entry配置');
       }
       outputFile = join(context, this.options.outputFile);
       pagesDir = join(context, this.options.pagesDir);
@@ -68,10 +73,10 @@ class RouterPlugin {
         ...this.options,
         outputFile,
         pagesDir,
-        indexFile
+        indexFile,
       });
       if (!readyAddEntry) {
-        if (typeof tmp == "string") {
+        if (typeof tmp === 'string') {
           entry[key] = outputFile;
         } else {
           entry[key].push(outputFile);
@@ -79,7 +84,7 @@ class RouterPlugin {
       }
     });
     let watch = false;
-    compiler.hooks.watchRun.tap("RouterPlugin", () => {
+    compiler.hooks.watchRun.tap('RouterPlugin', () => {
       if (watch) {
         return;
       }
@@ -87,21 +92,21 @@ class RouterPlugin {
       chokidar
         .watch(
           [
-            join(pagesDir, "*.{js,jsx,ts,tsx}"),
-            join(pagesDir, "*/index.{js,jsx,ts,tsx}")
+            join(pagesDir, '*.{js,jsx,ts,tsx}'),
+            join(pagesDir, '*/index.{js,jsx,ts,tsx}'),
           ],
-          {}
+          {},
         )
-        .on("all", () => {
+        .on('all', () => {
           try {
             genBootstrap({
               ...this.options,
               outputFile,
               pagesDir,
-              indexFile
+              indexFile,
             });
           } catch (e) {
-            console.error("[webpack-route-plugin][error]", e);
+            console.error('[webpack-route-plugin][error]', e);
             console.trace();
           }
         });
@@ -109,19 +114,19 @@ class RouterPlugin {
   }
 
   genRoutes(compiler) {
-    let outputFile = "";
-    let pagesDir = "";
-    compiler.hooks.entryOption.tap("RouterPlugin", context => {
+    let outputFile = '';
+    let pagesDir = '';
+    compiler.hooks.entryOption.tap('RouterPlugin', context => {
       outputFile = join(context, this.options.outputFile);
       pagesDir = join(context, this.options.pagesDir);
       genBootstrap({
         ...this.options,
         outputFile,
-        pagesDir
+        pagesDir,
       });
     });
     let watch = false;
-    compiler.hooks.watchRun.tap("RouterPlugin", () => {
+    compiler.hooks.watchRun.tap('RouterPlugin', () => {
       if (watch) {
         return;
       }
@@ -129,25 +134,23 @@ class RouterPlugin {
       chokidar
         .watch(
           [
-            join(pagesDir, "*.{js,jsx,ts,tsx}"),
-            join(pagesDir, "*/index.{js,jsx,ts,tsx}")
+            join(pagesDir, '*.{js,jsx,ts,tsx}'),
+            join(pagesDir, '*/index.{js,jsx,ts,tsx}'),
           ],
-          {}
+          {},
         )
-        .on("all", () => {
+        .on('all', () => {
           try {
             genBootstrap({
               ...this.options,
               outputFile,
-              pagesDir
+              pagesDir,
             });
           } catch (e) {
-            console.error("[webpack-route-plugin][error]", e);
+            console.error('[webpack-route-plugin][error]', e);
             console.trace();
           }
         });
     });
   }
 }
-
-module.exports = RouterPlugin;

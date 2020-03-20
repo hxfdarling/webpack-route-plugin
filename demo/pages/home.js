@@ -5,12 +5,12 @@ function Home() {
 
 Home.route = [
   {
-    path: '/'
+    path: '/',
   },
   {
     path: '/test',
     redirect: '/home',
-    sort:1000
+    sort: 1000,
   },
 ];
 
