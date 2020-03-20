@@ -53,9 +53,10 @@ export function genBootstrapFileCode({
   pagesDir,
   indexFile,
   ignoreFiles = [],
+  deep,
 }: BootstrapOptions) {
   ignoreFiles = [...ignoreFiles, ...defaultIgnoreFiles];
-  const nodes = parseFilesToNodes({ baseDir, pagesDir, ignoreFiles });
+  const nodes = parseFilesToNodes({ baseDir, pagesDir, ignoreFiles, deep });
   const routesCode = genRoutesCode(nodes, outputFile);
 
   const entryCode = `/* eslint-disable */
@@ -76,10 +77,11 @@ export function genRouteFileCode({
   pagesDir,
   outputFile,
   ignoreFiles = [],
+  deep,
 }: RouteOptions) {
   ignoreFiles = [...ignoreFiles, ...defaultIgnoreFiles];
 
-  const nodes = parseFilesToNodes({ baseDir, pagesDir, ignoreFiles });
+  const nodes = parseFilesToNodes({ baseDir, pagesDir, ignoreFiles, deep });
   const routesCode = genRoutesCode(nodes, outputFile);
   const entryCode = `/* eslint-disable */
 /**

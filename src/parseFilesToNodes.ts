@@ -1,4 +1,5 @@
 import { parseSync } from '@babel/core';
+import _ from 'lodash';
 import {
   arrowFunctionExpression,
   callExpression,
@@ -28,7 +29,6 @@ import path from 'path';
 const exts = ['.js', '.jsx', '.ts', '.tsx'];
 const ROUTE_KEY = 'route';
 const ROUTES_KEY = 'routes';
-const defaultIgnoreFiles = ['.DS_Store'];
 // const cwd = process.cwd();
 
 const findRouterNode = (body, name) =>
@@ -67,11 +67,8 @@ const toArray = router => {
 function getRouterNode({ code, file, baseDir }) {
   const ast = parseSync(code, {
     filename: file,
-    // babelrc: false,
-    // configFile: false,
     presets: [[require.resolve('@a8k/babel-preset'), { target: 'web' }]],
   }) as File;
-  // file = "./" + path.relative(cwd, file);
   const { body } = ast.program;
   // 是否有 export default
   const defaultDeclaration = body.find(node => {
@@ -171,7 +168,11 @@ const getSortNumber = node => {
   return 0;
 };
 
-export default function parseFilesToNodes({ pagesDir, ignoreFiles, baseDir }) {
+function walk(
+  pagesDir: string,
+  ignoreFiles: string[],
+  deep = false,
+): Array<any> {
   return (
     fs
       .readdirSync(pagesDir)
@@ -181,33 +182,59 @@ export default function parseFilesToNodes({ pagesDir, ignoreFiles, baseDir }) {
       .map(file => {
         const stat = fs.statSync(file);
         if (stat.isDirectory()) {
-          let pageFile = null;
-          exts.find(ext => {
-            const temp = path.join(file, 'index' + ext);
-            if (fs.existsSync(temp)) {
-              pageFile = temp;
-              return true;
+          if (deep) {
+            const files = walk(file, ignoreFiles, deep);
+            return files;
+          } else {
+            let pageFile = null;
+            exts.find(ext => {
+              const temp = path.join(file, 'index' + ext);
+              if (fs.existsSync(temp)) {
+                pageFile = temp;
+                return true;
+              }
+              return false;
+            });
+            if (!pageFile) {
+              console.warn(
+                '[webpack-route-plugin] in ' +
+                  file +
+                  ' directory not found index.js file',
+              );
             }
-            return false;
-          });
-          if (!pageFile) {
-            console.warn(
-              '[webpack-route-plugin] in ' +
-                file +
-                ' directory not found index.js file',
-            );
+            return pageFile;
           }
-          return pageFile;
         }
         return file;
       })
+  );
+}
+
+export default function parseFilesToNodes({
+  pagesDir,
+  ignoreFiles,
+  baseDir,
+  deep,
+}) {
+  return (
+    _(walk(pagesDir, ignoreFiles, deep))
+      .flattenDeep()
       // 过滤目录没有index文件的场景
       .filter(Boolean)
       // 扩展名必须是指定的
       .filter(file => exts.indexOf(path.extname(file)) >= 0)
-      // 获取routes
       .map(file => {
         const data = fs.readFileSync(file).toString();
+        return { file, data };
+      })
+      .filter(({ data }) => {
+        return (
+          /export\s+const\s+routes/.test(data) || /[\w]+\.route/.test(data)
+        );
+      })
+      .value()
+      // 获取routes
+      .map(({ file, data }) => {
         return getRouterNode({ code: data, file, baseDir });
       })
       // 过滤没有route的文件

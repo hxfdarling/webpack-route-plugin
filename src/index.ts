@@ -9,10 +9,11 @@ export class RouterPlugin {
     this.options = Object.assign(
       {
         baseDir: './src',
-        outputFile: null,
         pagesDir: './src/pages',
+        outputFile: null,
         type: TYPE.BOOTSTRAP, // route/bootstrap
         ignoreFiles: [],
+        deep: false,
       },
       options,
     );
@@ -93,7 +94,7 @@ export class RouterPlugin {
         .watch(
           [
             join(pagesDir, '*.{js,jsx,ts,tsx}'),
-            join(pagesDir, '*/index.{js,jsx,ts,tsx}'),
+            join(pagesDir, '**/index.{js,jsx,ts,tsx}'),
           ],
           {},
         )

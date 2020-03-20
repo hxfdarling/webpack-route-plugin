@@ -85,5 +85,5 @@ node_modules/
 # production dir
 /dist
 /lib
-/demo/bootstrap.js
-/demo/routes.js
+/demo/bootstrap*
+/demo/routes*

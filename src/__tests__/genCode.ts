@@ -24,4 +24,13 @@ describe('gen code', () => {
     });
     expect(code).toMatchSnapshot();
   });
+  it('gen route deep', async () => {
+    const code = gen({
+      pagesDir,
+      outputFile: join(baseDir, 'routes.js'),
+      type: TYPE.ROUTES,
+      deep: true,
+    });
+    expect(code).toMatchSnapshot();
+  });
 });

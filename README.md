@@ -5,17 +5,18 @@
 ## webpack 配置
 
 ```js
-const RoutePlugin = require("webpack-route-plugin");
+const RoutePlugin = require('webpack-route-plugin');
 module.exports = {
   //
   plugins: [
     new RoutePlugin({
-      baseDir: "./src", // 默认配置
-      pagesDir: "./src/pages", // 默认配置
-      outputFile: "./src/bootstrap.js", // 默认配置
-      type: "bootstrap" // bootstrap/routes
-    })
-  ]
+      baseDir: './src', // 默认配置
+      pagesDir: './src/pages', // 默认配置
+      outputFile: './src/bootstrap.js', // 默认配置
+      type: 'bootstrap', // bootstrap/routes
+      deep: false, // 是否启用深度扫描
+    }),
+  ],
 };
 ```
 
@@ -41,26 +42,26 @@ export default function Home() {
 
 Home.route = [
   {
-    name: "Home",
-    path: "/"
+    name: 'Home',
+    path: '/',
   },
   {
-    path: "/test",
-    redirect: "/"
-  }
+    path: '/test',
+    redirect: '/',
+  },
 ];
 // or
 Home.route = {
-  name: "Home",
-  path: "/"
+  name: 'Home',
+  path: '/',
 };
 
 // or
 export const routes = [
   {
-    name: "Home",
-    path: "/"
-  }
+    name: 'Home',
+    path: '/',
+  },
 ];
 ```
 

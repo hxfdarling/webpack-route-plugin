@@ -68,3 +68,40 @@ const routes = [{
 export default routes;
     "
 `;
+
+exports[`gen code gen route deep 1`] = `
+"/* eslint-disable */
+/**
+ * 该文件为构建自动生成的启动文件，无需关注本文件，并且不要修改该文件内容
+ * 文件之所以放在此处，是为了方便调试查看
+ */
+const routes = [{
+  name: 'xxx',
+  sort: -2,
+  component: () => import(\\"./demo/pages/var.js\\")
+}, {
+  path: '/test',
+  name: 'test',
+  component: () => import(\\"./demo/pages/empty.js\\")
+}, {
+  path: '/test2',
+  component: () => import(\\"./demo/pages/empty.js\\")
+}, {
+  path: '/',
+  component: () => import(\\"./demo/pages/home.js\\")
+}, {
+  name: 'test',
+  path: '/work',
+  component: () => import(\\"./demo/pages/work/index.js\\")
+}, {
+  name: 'work-test',
+  path: '/work/test',
+  component: () => import(\\"./demo/pages/work/test/index.js\\")
+}, {
+  path: '/test',
+  redirect: '/home',
+  sort: 1000
+}];
+export default routes;
+    "
+`;
