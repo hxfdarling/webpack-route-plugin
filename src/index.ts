@@ -1,11 +1,19 @@
 import chokidar from 'chokidar';
-import { join } from 'path';
-import genBootstrap from './genCode';
+import { join, relative, dirname, sep } from 'path';
 import { TYPE } from './const';
+import genFile from './genFile';
 
-export class RouterPlugin {
-  options: any;
-  constructor(options = {}) {
+export interface Options {
+  baseDir?: string;
+  pagesDir?: string;
+  outputFile?: string;
+  type?: TYPE; // route/bootstrap
+  ignoreFiles?: string[];
+  deep?: boolean;
+}
+export default class RouterPlugin {
+  options: Options;
+  constructor(options: Options = {}) {
     this.options = Object.assign(
       {
         baseDir: './src',
@@ -70,12 +78,13 @@ export class RouterPlugin {
       }
       outputFile = join(context, this.options.outputFile);
       pagesDir = join(context, this.options.pagesDir);
-      genBootstrap({
+      indexFile = `.${sep}${relative(dirname(outputFile), indexFile)}`;
+      genFile({
         ...this.options,
         outputFile,
         pagesDir,
         indexFile,
-      });
+      } as any);
       if (!readyAddEntry) {
         if (typeof tmp === 'string') {
           entry[key] = outputFile;
@@ -83,34 +92,7 @@ export class RouterPlugin {
           entry[key].push(outputFile);
         }
       }
-    });
-    let watch = false;
-    compiler.hooks.watchRun.tap('RouterPlugin', () => {
-      if (watch) {
-        return;
-      }
-      watch = true;
-      chokidar
-        .watch(
-          [
-            join(pagesDir, '*.{js,jsx,ts,tsx}'),
-            join(pagesDir, '**/index.{js,jsx,ts,tsx}'),
-          ],
-          {},
-        )
-        .on('all', () => {
-          try {
-            genBootstrap({
-              ...this.options,
-              outputFile,
-              pagesDir,
-              indexFile,
-            });
-          } catch (e) {
-            console.error('[webpack-route-plugin][error]', e);
-            console.trace();
-          }
-        });
+      this.walk(compiler, { pagesDir, outputFile, indexFile });
     });
   }
 
@@ -120,12 +102,23 @@ export class RouterPlugin {
     compiler.hooks.entryOption.tap('RouterPlugin', context => {
       outputFile = join(context, this.options.outputFile);
       pagesDir = join(context, this.options.pagesDir);
-      genBootstrap({
+      genFile({
         ...this.options,
         outputFile,
         pagesDir,
-      });
+      } as any);
+      this.walk(compiler, { pagesDir, outputFile });
     });
+  }
+
+  walk(
+    compiler,
+    {
+      pagesDir,
+      outputFile,
+      indexFile,
+    }: { pagesDir: string; outputFile: string; indexFile?: string },
+  ) {
     let watch = false;
     compiler.hooks.watchRun.tap('RouterPlugin', () => {
       if (watch) {
@@ -133,20 +126,15 @@ export class RouterPlugin {
       }
       watch = true;
       chokidar
-        .watch(
-          [
-            join(pagesDir, '*.{js,jsx,ts,tsx}'),
-            join(pagesDir, '*/index.{js,jsx,ts,tsx}'),
-          ],
-          {},
-        )
+        .watch([join(pagesDir, '**/*.{js,jsx,ts,tsx}')], {})
         .on('all', () => {
           try {
-            genBootstrap({
+            genFile({
               ...this.options,
               outputFile,
               pagesDir,
-            });
+              indexFile,
+            } as any);
           } catch (e) {
             console.error('[webpack-route-plugin][error]', e);
             console.trace();

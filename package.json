@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./lib/app.js",
-    "dev": "tsnd --inspect --debug --transpileOnly --respawn src/app.ts",
+    "dev": "tsc --watch",
     "dev:2": "tsc --watch & nodemon ./lib/app.js",
     "lint:style": "stylelint --fix src/**/*.{less,scss,css}",
     "build": "rimraf lib && tsc",
@@ -23,7 +23,7 @@
     "demo"
   ],
   "dependencies": {
-    "@a8k/babel-preset": "^2.4.2",
+    "@a8k/babel-preset": "^2.4.3",
     "@babel/core": "^7.8.7",
     "chokidar": "^3.3.1",
     "fs-extra": "^9.0.0",

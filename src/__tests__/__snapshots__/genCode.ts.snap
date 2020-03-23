@@ -76,6 +76,11 @@ exports[`gen code gen route deep 1`] = `
  * 文件之所以放在此处，是为了方便调试查看
  */
 const routes = [{
+  sort: -3,
+  name: 'work-test',
+  path: '/work/test',
+  component: () => import(\\"./demo/pages/work/test/index.js\\")
+}, {
   name: 'xxx',
   sort: -2,
   component: () => import(\\"./demo/pages/var.js\\")
@@ -93,10 +98,6 @@ const routes = [{
   name: 'test',
   path: '/work',
   component: () => import(\\"./demo/pages/work/index.js\\")
-}, {
-  name: 'work-test',
-  path: '/work/test',
-  component: () => import(\\"./demo/pages/work/test/index.js\\")
 }, {
   path: '/test',
   redirect: '/home',
