@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.3.0...v1.3.1) (2020-03-23)
+
+
+### Bug Fixes
+
+* 性能优化之文件变更检测效率提高 ([8351d85](https://github.com/hxfdarling/webpack-route-plugin/commit/8351d858d65fd7e893f1a17f6c13f9531f21b499))
+
 ## [1.3.0](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.2.0...v1.3.0) (2020-03-23)
 
 
