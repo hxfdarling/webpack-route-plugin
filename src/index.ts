@@ -1,7 +1,9 @@
 import chokidar from 'chokidar';
-import { join, relative, dirname, sep } from 'path';
+import fs from 'fs-extra';
+import { dirname, join, relative, sep } from 'path';
 import { TYPE } from './const';
 import genFile from './genFile';
+import { hasRouteConfig } from './utils';
 
 export interface Options {
   baseDir?: string;
@@ -125,20 +127,46 @@ export default class RouterPlugin {
         return;
       }
       watch = true;
+      let timeId: NodeJS.Timeout;
+      const hasRouteFiles = new Set<string>();
       chokidar
         .watch([join(pagesDir, '**/*.{js,jsx,ts,tsx}')], {})
-        .on('all', () => {
-          try {
-            genFile({
-              ...this.options,
-              outputFile,
-              pagesDir,
-              indexFile,
-            } as any);
-          } catch (e) {
-            console.error('[webpack-route-plugin][error]', e);
-            console.trace();
+        .on('all', (eventName, path) => {
+          if (['add', 'change'].includes(eventName)) {
+            const data = fs.readFileSync(path).toString();
+            const hasRoute = hasRouteConfig(data);
+            if (!hasRoute && !hasRouteFiles.has(path)) {
+              // 不在路由文件内，并且没有路由数据的文件直接忽略
+              return;
+            }
+            if (hasRoute) {
+              hasRouteFiles.add(path);
+            } else {
+              hasRouteFiles.delete(path);
+            }
+          } else if (!hasRouteFiles.has(path)) {
+            // 如果文件删除，切不在路由文件内，直接忽略
+            return;
           }
+          clearTimeout(timeId);
+          console.log(
+            'update routes by file',
+            eventName,
+            relative(pagesDir, path),
+          );
+          timeId = setTimeout(() => {
+            try {
+              genFile({
+                ...this.options,
+                outputFile,
+                pagesDir,
+                indexFile,
+              } as any);
+            } catch (e) {
+              console.error('[webpack-route-plugin][error]', e);
+              console.trace();
+            }
+          }, 150);
         });
     });
   }

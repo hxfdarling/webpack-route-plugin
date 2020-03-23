@@ -1,5 +1,4 @@
 import { parseSync } from '@babel/core';
-import _ from 'lodash';
 import {
   arrowFunctionExpression,
   callExpression,
@@ -24,7 +23,9 @@ import {
   stringLiteral,
 } from '@babel/types';
 import fs from 'fs-extra';
+import _ from 'lodash';
 import path from 'path';
+import { hasRouteConfig } from './utils';
 
 const exts = ['.js', '.jsx', '.ts', '.tsx'];
 const ROUTE_KEY = 'route';
@@ -227,11 +228,7 @@ export default function parseFilesToNodes({
         const data = fs.readFileSync(file).toString();
         return { file, data };
       })
-      .filter(({ data }) => {
-        return (
-          /export\s+const\s+routes/.test(data) || /[\w]+\.route/.test(data)
-        );
-      })
+      .filter(({ data }) => hasRouteConfig(data))
       .value()
       // 获取routes
       .map(({ file, data }) => {
