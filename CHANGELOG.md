@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.3.1...v1.4.0) (2020-05-18)
+
+
+### Features
+
+* 支持解析route文件作为当前目录下index组件的路由 ([576435d](https://github.com/hxfdarling/webpack-route-plugin/commit/576435d6b5744d00dd8a7219147b5d3519a2ab51))
+* 自持解析import/require ([360b2b4](https://github.com/hxfdarling/webpack-route-plugin/commit/360b2b4d56ab22d2cc05f40a91fb15a15be8c0ed))
+
 ### [1.3.1](https://github.com/hxfdarling/webpack-route-plugin/compare/v1.3.0...v1.3.1) (2020-03-23)
 
 
