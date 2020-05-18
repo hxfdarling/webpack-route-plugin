@@ -6,16 +6,19 @@ import {
   Identifier,
   identifier,
   isArrayExpression,
+  isCallExpression,
   isClassDeclaration,
   isExportDefaultDeclaration,
   isExportNamedDeclaration,
   isExpressionStatement,
   isFunctionDeclaration,
   isIdentifier,
+  isImport,
   isMemberExpression,
   isNumericLiteral,
   isObjectExpression,
   isObjectProperty,
+  isStringLiteral,
   isUnaryExpression,
   isVariableDeclaration,
   isVariableDeclarator,
@@ -145,6 +148,35 @@ function getRouterNode({ code, file, baseDir }) {
     .map(node => {
       if (isObjectExpression(node)) {
         if (!isRedirect(node.properties)) {
+          node.properties.forEach(node => {
+            if (isObjectProperty(node)) {
+              if (isCallExpression(node.value)) {
+                const callee = node.value.callee;
+                const args = node.value.arguments;
+                const isRequire =
+                  isIdentifier(callee) && callee.name === 'require';
+                if (isRequire || isImport(callee)) {
+                  const p = args[0];
+                  if (isStringLiteral(p)) {
+                    node.value = callExpression(
+                      identifier(isImport(callee) ? 'import' : 'require'),
+                      [
+                        stringLiteral(
+                          '.' +
+                            path.sep +
+                            path.join(
+                              path.relative(baseDir, file),
+                              '..',
+                              p.value,
+                            ),
+                        ),
+                      ],
+                    );
+                  }
+                }
+              }
+            }
+          });
           node.properties.push(componentNode);
         }
         return node;

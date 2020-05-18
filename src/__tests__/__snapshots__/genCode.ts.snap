@@ -15,9 +15,11 @@ const routes = [{
 }, {
   path: '/test',
   name: 'test',
+  icon: require(\\"./../demo/pages/var\\"),
   component: () => import(\\"./../demo/pages/empty.js\\")
 }, {
   path: '/test2',
+  icon: import(\\"./../demo/pages/var\\"),
   component: () => import(\\"./../demo/pages/empty.js\\")
 }, {
   path: '/',
@@ -49,9 +51,11 @@ const routes = [{
 }, {
   path: '/test',
   name: 'test',
+  icon: require(\\"./demo/pages/var\\"),
   component: () => import(\\"./demo/pages/empty.js\\")
 }, {
   path: '/test2',
+  icon: import(\\"./demo/pages/var\\"),
   component: () => import(\\"./demo/pages/empty.js\\")
 }, {
   path: '/',
@@ -87,9 +91,11 @@ const routes = [{
 }, {
   path: '/test',
   name: 'test',
+  icon: require(\\"./demo/pages/var\\"),
   component: () => import(\\"./demo/pages/empty.js\\")
 }, {
   path: '/test2',
+  icon: import(\\"./demo/pages/var\\"),
   component: () => import(\\"./demo/pages/empty.js\\")
 }, {
   path: '/',
