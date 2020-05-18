@@ -28,6 +28,21 @@ function genRoutesCode(nodes, outputFile) {
   return transformFromAstSync(ast, '', { filename: outputFile }).code;
 }
 
+const helper = `
+const toString = Object.prototype.toString;
+
+function getDefault(m) {
+  return m.__esModule ? m.default : m;
+}
+
+function toArray(arr, component) {
+  if (toString.call(arr) !== "[object Array]") {
+    arr = [arr];
+  }
+  return arr.map((item) => ({ ...item, component }));
+}
+`;
+
 export default function genCode(options: BootstrapOptions | RouteOptions) {
   const { pagesDir, type } = options;
   if (!fs.existsSync(pagesDir)) {
@@ -65,7 +80,7 @@ export function genBootstrapFileCode({
  * 文件之所以放在此处，是为了方便调试查看
  */
 import bootstrap from '${indexFile}';
-
+${helper}
 ${routesCode}
 
 bootstrap(routes);
@@ -88,6 +103,7 @@ export function genRouteFileCode({
  * 该文件为构建自动生成的启动文件，无需关注本文件，并且不要修改该文件内容
  * 文件之所以放在此处，是为了方便调试查看
  */
+${helper}
 ${routesCode}
 export default routes;
     `;

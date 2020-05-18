@@ -8,6 +8,19 @@ exports[`gen code gen bootstrap 1`] = `
  */
 import bootstrap from './index.js';
 
+const toString = Object.prototype.toString;
+
+function getDefault(m) {
+  return m.__esModule ? m.default : m;
+}
+
+function toArray(arr, component) {
+  if (toString.call(arr) !== \\"[object Array]\\") {
+    arr = [arr];
+  }
+  return arr.map((item) => ({ ...item, component }));
+}
+
 const routes = [{
   name: 'xxx',
   sort: -2,
@@ -44,6 +57,20 @@ exports[`gen code gen route 1`] = `
  * 该文件为构建自动生成的启动文件，无需关注本文件，并且不要修改该文件内容
  * 文件之所以放在此处，是为了方便调试查看
  */
+
+const toString = Object.prototype.toString;
+
+function getDefault(m) {
+  return m.__esModule ? m.default : m;
+}
+
+function toArray(arr, component) {
+  if (toString.call(arr) !== \\"[object Array]\\") {
+    arr = [arr];
+  }
+  return arr.map((item) => ({ ...item, component }));
+}
+
 const routes = [{
   name: 'xxx',
   sort: -2,
@@ -79,12 +106,21 @@ exports[`gen code gen route deep 1`] = `
  * 该文件为构建自动生成的启动文件，无需关注本文件，并且不要修改该文件内容
  * 文件之所以放在此处，是为了方便调试查看
  */
+
+const toString = Object.prototype.toString;
+
+function getDefault(m) {
+  return m.__esModule ? m.default : m;
+}
+
+function toArray(arr, component) {
+  if (toString.call(arr) !== \\"[object Array]\\") {
+    arr = [arr];
+  }
+  return arr.map((item) => ({ ...item, component }));
+}
+
 const routes = [{
-  sort: -3,
-  name: 'work-test',
-  path: '/work/test',
-  component: () => import(\\"./demo/pages/work/test/index.js\\")
-}, {
   name: 'xxx',
   sort: -2,
   component: () => import(\\"./demo/pages/var.js\\")
@@ -104,7 +140,7 @@ const routes = [{
   name: 'test',
   path: '/work',
   component: () => import(\\"./demo/pages/work/index.js\\")
-}, {
+}, ...toArray(getDefault(require(\\"./demo/pages/work/test/route.js\\")), () => import(\\"./demo/pages/work/test/index.js\\")), {
   path: '/test',
   redirect: '/home',
   sort: 1000

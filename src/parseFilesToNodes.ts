@@ -23,6 +23,7 @@ import {
   isVariableDeclaration,
   isVariableDeclarator,
   objectProperty,
+  spreadElement,
   stringLiteral,
 } from '@babel/types';
 import fs from 'fs-extra';
@@ -68,7 +69,30 @@ const toArray = router => {
     return [router];
   }
 };
-function getRouterNode({ code, file, baseDir }) {
+function getRouterNode({ code, file, baseDir, routeFile }) {
+  // 获取router的值
+  const routeFunction = arrowFunctionExpression(
+    [],
+    callExpression(identifier('import'), [
+      stringLiteral('.' + path.sep + path.relative(baseDir, file)),
+    ]),
+  );
+  const componentNode = objectProperty(identifier('component'), routeFunction);
+  if (routeFile) {
+    return [
+      spreadElement(
+        callExpression(identifier('toArray'), [
+          callExpression(identifier('getDefault'), [
+            callExpression(identifier('require'), [
+              stringLiteral('.' + path.sep + path.relative(baseDir, routeFile)),
+            ]),
+          ]),
+          routeFunction,
+        ]),
+      ),
+    ];
+  }
+
   const ast = parseSync(code, {
     filename: file,
     presets: [[require.resolve('@a8k/babel-preset'), { target: 'web' }]],
@@ -133,17 +157,6 @@ function getRouterNode({ code, file, baseDir }) {
     return null;
   }
 
-  // 获取router的值
-  const componentNode = objectProperty(
-    identifier('component'),
-    arrowFunctionExpression(
-      [],
-      callExpression(identifier('import'), [
-        stringLiteral('.' + path.sep + path.relative(baseDir, file)),
-      ]),
-    ),
-  );
-
   return toArray(router)
     .map(node => {
       if (isObjectExpression(node)) {
@@ -188,7 +201,15 @@ function getRouterNode({ code, file, baseDir }) {
 }
 
 const getSortNumber = node => {
-  const sortNode = node.properties.find(i => i.key.name === 'sort');
+  if (!node.properties) {
+    return 0;
+  }
+  const sortNode = node.properties.find(i => {
+    if (!isObjectProperty(i)) {
+      return false;
+    }
+    return i.key.name === 'sort';
+  });
   if (sortNode) {
     if (isNumericLiteral(sortNode.value)) {
       return sortNode.value.value;
@@ -255,16 +276,30 @@ export default function parseFilesToNodes({
       // 过滤目录没有index文件的场景
       .filter(Boolean)
       // 扩展名必须是指定的
-      .filter(file => exts.indexOf(path.extname(file)) >= 0)
+      .filter(
+        file =>
+          exts.indexOf(path.extname(file)) >= 0 &&
+          path.basename(file).split('.')[0] !== 'route',
+      )
       .map(file => {
         const data = fs.readFileSync(file).toString();
-        return { file, data };
+        if (path.basename(file).split('.')[0] === 'index') {
+          const baseFileName = path.join(file, '../', './route');
+          const routeFile = exts
+            .map(item => baseFileName + item)
+            .find(fs.existsSync);
+          return { file, data, routeFile };
+        } else {
+          return { file, data };
+        }
       })
-      .filter(({ data }) => hasRouteConfig(data))
+      .filter(
+        ({ data, routeFile }) => hasRouteConfig(data) || Boolean(routeFile),
+      )
       .value()
       // 获取routes
-      .map(({ file, data }) => {
-        return getRouterNode({ code: data, file, baseDir });
+      .map(({ file, data, routeFile }) => {
+        return getRouterNode({ code: data, file, baseDir, routeFile });
       })
       // 过滤没有route的文件
       .filter(Boolean)
@@ -272,7 +307,7 @@ export default function parseFilesToNodes({
       .reduce((r, c) => {
         r.push(...c);
         return r;
-      }, [])
+      }, [] as any)
       .filter(Boolean)
       // 根据sort排序
       .sort((a, b) => getSortNumber(a) - getSortNumber(b))
