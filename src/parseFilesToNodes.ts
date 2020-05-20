@@ -171,9 +171,8 @@ function getRouterNode({ code, file, baseDir, routeFile }) {
                 if (isRequire || isImport(callee)) {
                   const p = args[0];
                   if (isStringLiteral(p)) {
-                    node.value = callExpression(
-                      identifier(isImport(callee) ? 'import' : 'require'),
-                      [
+                    node.value = callExpression(identifier('getDefault'), [
+                      callExpression(identifier('require'), [
                         stringLiteral(
                           '.' +
                             path.sep +
@@ -183,8 +182,8 @@ function getRouterNode({ code, file, baseDir, routeFile }) {
                               p.value,
                             ),
                         ),
-                      ],
-                    );
+                      ]),
+                    ]);
                   }
                 }
               }
